@@ -14,8 +14,18 @@
         </p>
         <a href="https://youtu.be/_y6NR8vifzU?si=oBVnfMryoPIFITUI"><img src="bear.png"/></a>
         <a href="http://orphanedwildlife.org/">Website of Orphaned Wildlife Centre</a>
+        <div>
+            <label for="name">Name (4 to 8 characters):</label>
+
+            <input type="text" id="name" name="name" required minlength="4" maxlength="8" size="10" />
+        </div>
+        <button id="Pressme">Press me</button>
         <script>
-            alert("Hello World!");
+            const mybutton = document.querySelector('#Pressme');
+            mybutton.onclick = () => {
+                const myElement = document.querySelector('#name');
+                alert("Hello " + myElement.value);
+            }
         </script>
     
     </body>
