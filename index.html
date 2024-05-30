@@ -56,8 +56,10 @@
         <script>
             const mybutton = document.querySelector('#Pressme');
             mybutton.onclick = () => {
-                const myElement = document.querySelector('#name');
-                alert("Hello " + myElement.value);
+                const nounOneInput = document.querySelector('#noun1input');
+                const nounOneValue = nounOneInput.value;
+                const nounOneSpan = document.querySelector('#noun1');
+                nounOneSpan.textContent = nounOneValue
             }
         </script>
     
