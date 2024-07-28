@@ -62,6 +62,14 @@
                 nounOneSpan.textContent = nounOneValue
             }
         </script>
-    
+        <script>
+            const mybutton = document.querySelector('#Pressme');
+            mybutton.onclick = () => {
+                const nounTwoInput = document.querySelector('#noun2input');
+                const nounTwoValue = nounOneInput.value;
+                const nounTwoSpan = document.querySelector('#noun2');
+                nounOneSpan.textContent = nounTwoValue
+            }
+        </script>
     </body>
 </html>
