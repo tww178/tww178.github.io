@@ -1,1 +1,10 @@
-
+<html>
+  <body>
+    <button>Save the time!!!</button>
+    <script>
+      document.querySelector("button").onclick=()=>{
+        localStorage.setItem("buttonPressTime", Date.now())
+      }
+    </script>
+  </body>
+</html>
