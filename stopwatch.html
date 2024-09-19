@@ -1,6 +1,9 @@
 <html>
   <body>
     <button>Save the time!!!</button>
+    <ul>
+
+    </ul>
     <script>
       document.querySelector("button").onclick=()=>{
         let timeArray = [];
@@ -9,8 +12,17 @@
         }
         timeArray.push(Date.now())
         localStorage.setItem("recordedTime", JSON.stringify(timeArray))
+
+        const prettyTimes = timeArray.map(time => {
+          const myDate = new Date(time)
+          return myDate.toDateString()
+
+        })
+        console.log(prettyTimes)
       }
-      
+
+
+
     </script>
   </body>
 </html>
