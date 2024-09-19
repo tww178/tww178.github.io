@@ -15,7 +15,7 @@
 
         const prettyTimes = timeArray.map(time => {
           const myDate = new Date(time)
-          return myDate.toDateString()
+          return myDate.toISOString()
 
         })
         console.log(prettyTimes)
