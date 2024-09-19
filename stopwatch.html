@@ -3,8 +3,14 @@
     <button>Save the time!!!</button>
     <script>
       document.querySelector("button").onclick=()=>{
-        localStorage.setItem("buttonPressTime", Date.now())
+        let timeArray = [];
+        if(localStorage.getItem("recordedTime")){
+          timeArray=JSON.parse(localStorage.getItem("recordedTime"));
+        }
+        timeArray.push(Date.now())
+        localStorage.setItem("recordedTime", JSON.stringify(timeArray))
       }
+      
     </script>
   </body>
 </html>
