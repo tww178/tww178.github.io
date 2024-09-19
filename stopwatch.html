@@ -18,6 +18,10 @@
           return myDate.toISOString()
 
         })
+        .map(prettyTime => {
+          return `<li>${prettyTime}</li>`
+        })
+        document.querySelector("ul").innerHTML=prettyTimes.join("\n")
         console.log(prettyTimes)
       }
 
