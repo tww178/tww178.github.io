@@ -10,7 +10,11 @@
         if(localStorage.getItem("recordedTime")){
           timeArray=JSON.parse(localStorage.getItem("recordedTime"));
         }
-        timeArray.push(Date.now())
+        const dateNow = Date.now();
+        timeArray.push(dateNow)
+        saveTheTime((new Date(dateNow)).toISOString())
+        
+
         localStorage.setItem("recordedTime", JSON.stringify(timeArray))
 
         const prettyTimes = timeArray.map(time => {
@@ -23,6 +27,27 @@
         })
         document.querySelector("ul").innerHTML=prettyTimes.join("\n")
         console.log(prettyTimes)
+      }
+      
+
+      function saveTheTime (time) {
+        console.log("saveTheTime",time)
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        const raw = JSON.stringify(time);
+
+        const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+        };
+
+        fetch("https://280f6d0e-bec1-4ddd-bb06-5494ffc0e24a-00-3thfss8fd9z6p.worf.replit.dev/savethetime", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
       }
 
 
