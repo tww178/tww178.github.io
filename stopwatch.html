@@ -25,7 +25,7 @@
 
         })
         .map(prettyTime => {
-          return `<li>${prettyTime, theText}</li>`
+          return `<li>${prettyTime}, ${theText}</li>`
         })
         document.querySelector("ul").innerHTML=prettyTimes.join("\n")
         console.log(prettyTimes, theText)
