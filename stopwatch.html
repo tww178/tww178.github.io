@@ -13,19 +13,16 @@
           timeArray=JSON.parse(localStorage.getItem("recordedTime"));
         }
         const dateNow = Date.now();
-        timeArray.push(dateNow)
+        const timeEntry = { task: theText, time: dateNow }; // Store both task and timestamp
+        timeArray.push(timeEntry)
         saveTheTime((new Date(dateNow)).toISOString())
         
 
         localStorage.setItem("recordedTime", JSON.stringify(timeArray))
 
-        const prettyTimes = timeArray.map(time => {
-          const myDate = new Date(time)
-          return myDate.toISOString()
-
-        })
-        .map(prettyTime => {
-          return `<li>${prettyTime}</li>`
+        const prettyTimes = timeArray.map(entry => {
+          const myDate = new Date(entry.time);
+          return `<li>${myDate.toISOString()} - ${entry.task}</li>`; // Display both timestamp and task
         })
         document.querySelector("ul").innerHTML=prettyTimes.join("\n")
         console.log(prettyTimes, theText)
