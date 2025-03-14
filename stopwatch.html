@@ -12,32 +12,34 @@
     </ul>
     <script>
       document.querySelector("button").onclick=()=>{
-        const theText = document.querySelector("#whatDidUDo").value;
+        const theText = document.querySelector("#whatDidUDo").value; // Get input value
         let timeArray = [];
+        
         if(localStorage.getItem("recordedTime")){
           timeArray=JSON.parse(localStorage.getItem("recordedTime"));
         }
-        const dateNow = Date.now();
-        timeArray.push(dateNow)
-        saveTheTime((new Date(dateNow)).toISOString())
         
+        const dateNow = Date.now();
+        const timeEntry = { task: theText, time: dateNow }; // Store both task and timestamp Help: is entry here a dictionary or an object??
+        timeArray.push(timeEntry);
+        
+        saveTheTime(timeEntry); // Send task + time
+        
+        localStorage.setItem("recordedTime", JSON.stringify(timeArray)) // Saving the updated entries to localStorage
 
-        localStorage.setItem("recordedTime", JSON.stringify(timeArray))
+        const prettyTimes = timeArray
+          .map(entry => {
+            const myDate = new Date(entry.time); //Help: is entry here a dictionary or an object??
+            return `<li>${myDate.toISOString()} - ${entry.task}</li>`; // Display both timestamp and task
+          })
+          .join("\n");
+        document.querySelector("ul").innerHTML = prettyTimes;
+        
+        console.log(timeArray); // Logs all saved entries
+        document.getElementById("whatDidUDo").value = '' //trying to empty the input box for next input
+      };
 
-        const prettyTimes = timeArray.map(time => {
-          const myDate = new Date(time)
-          return myDate.toISOString()
-
-        })
-        .map(prettyTime => {
-          return `<li>${prettyTime}, ${theText}</li>`
-        })
-        document.querySelector("ul").innerHTML=prettyTimes.join("\n")
-        console.log(prettyTimes, theText)
-        document.getElementById("whatDidUDo").value = ''
-      }
-      
-
+      //backend stuff starts below?
       function saveTheTime (time) {
         console.log("saveTheTime",time)
         const myHeaders = new Headers();
@@ -57,8 +59,6 @@
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
       }
-
-
 
     </script>
   </body>
