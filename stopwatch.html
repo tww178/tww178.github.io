@@ -23,7 +23,7 @@
         const timeEntry = { task: theText, time: dateNow }; // Store both task and timestamp Help: is entry here a dictionary or an object??
         timeArray.push(timeEntry);
         
-        saveTheTime(timeEntry); // Send task + time
+        saveTheTime(timeEntry); // Send task + time to backend related stuff
         
         localStorage.setItem("recordedTime", JSON.stringify(timeArray)) // Saving the updated entries to localStorage
 
@@ -39,7 +39,7 @@
         document.getElementById("whatDidUDo").value = '' //trying to empty the input box for next input
       };
 
-      //backend stuff starts below?
+      //backend stuff starts below? //next time we are changing some stuff down here so when we click the button it sends the correct time and things we did
       function saveTheTime (time) {
         console.log("saveTheTime",time)
         const myHeaders = new Headers();
