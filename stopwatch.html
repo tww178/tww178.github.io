@@ -40,12 +40,12 @@
       };
 
       //backend stuff starts below? //next time we are changing some stuff down here so when we click the button it sends the correct time and things we did
-      function saveTheTime (time) {
-        console.log("saveTheTime",time)  //time is the parameter for the saveTheTime function and the argument passed in is the timeEntry above in line 26??
+      function saveTheTime (timeEntry) {
+        console.log("saveTheTime",timeEntry)  //time is the parameter for the saveTheTime function and the argument passed in is the timeEntry above in line 26??
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
-        const raw = JSON.stringify(time);  //line 23 timeEntry = { task: theText, time: dateNow } how does this update the raw content on postman and pass to line 20 on replit?? (times[jsontime['timestring']] = jsontime['whatDidIDo']) then somehow send it back to frontend?
+        const raw = JSON.stringify(timeEntry);  //line 23 timeEntry = { task: theText, time: dateNow } how does this update the raw content on postman and pass to line 20 on replit?? (times[jsontime['timestring']] = jsontime['whatDidIDo']) then somehow send it back to frontend?
 
         const requestOptions = {
         method: "POST",
