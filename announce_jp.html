@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Countdown Timer</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #1a1a1a;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            width: 350px;
+        }
+        .timer-display {
+            font-size: 4.5rem;
+            font-weight: bold;
+            font-variant-numeric: tabular-nums;
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+        .inputs, .settings {
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings {
+            flex-direction: column;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .setting-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4px 0;
+        }
+        input[type="number"] {
+            width: 70px;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            text-align: center;
+        }
+        select, input[type="range"] {
+            padding: 0.4rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0 0.25rem;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        .btn-start { background-color: #0070f3; color: white; }
+        .btn-stop { background-color: #e00; color: white; }
+        .btn-reset { background-color: #666; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Voice Countdown Timer</h2>
+    
+    <div class="inputs">
+        <input type="number" id="minutes" min="0" max="60" value="1" placeholder="Min">
+        <span>m</span>
+        <input type="number" id="seconds" min="0" max="59" value="0" placeholder="Sec">
+        <span>s</span>
+    </div>
+
+    <!-- New Volume and Language Controls -->
+    <div class="settings">
+        <div class="setting-row">
+            <label for="langSelect">Language:</label>
+            <select id="langSelect">
+                <option value="en" selected>English</option>
+                <option value="ja">日本語 (Japanese)</option>
+            </select>
+        </div>
+        <div class="setting-row">
+            <label for="volumeSlider">Volume:</label>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
+        </div>
+    </div>
+
+    <div class="timer-display" id="display">01:00</div>
+
+    <div class="controls">
+        <button class="btn-start" id="startBtn">Start</button>
+        <button class="btn-stop" id="stopBtn">Pause</button>
+        <button class="btn-reset" id="resetBtn">Reset</button>
+    </div>
+</div>
+
+<script>
+    let countdown;
+    let timeLeft = 60; 
+    let isRunning = false;
+
+    const display = document.getElementById('display');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const minInput = document.getElementById('minutes');
+    const secInput = document.getElementById('seconds');
+    const langSelect = document.getElementById('langSelect');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel(); 
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Set dynamic volume
+            utterance.volume = parseFloat(volumeSlider.value);
+
+            // Set accent locale based on choice
+            if (langSelect.value === 'ja') {
+                utterance.lang = 'ja-JP';
+            } else {
+                utterance.lang = 'en-US';
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    function updateDisplay(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function announceTime(seconds) {
+        const isJa = langSelect.value === 'ja';
+
+        if (seconds === 0) {
+            speak(isJa ? "時間です！" : "Time is up!");
+            return;
+        }
+
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+
+        if (isJa) {
+            // Japanese announcements
+            if (seconds > 60 && seconds % 60 === 0) {
+                speak(`残り${m}分です`);
+            } else if (seconds === 60) {
+                speak("残り1分です");
+            } else if (seconds === 30) {
+                speak("残り30秒です");
+            } else if (seconds <= 10 && seconds > 0) {
+                speak(seconds.toString()); 
+            }
+        } else {
+            // English announcements
+            if (seconds > 60 && seconds % 60 === 0) {
+                speak(`${m} minutes remaining`);
+            } else if (seconds === 60) {
+                speak("One minute remaining");
+            } else if (seconds === 30) {
+                speak("30 seconds remaining");
+            } else if (seconds <= 10 && seconds > 0) {
+                speak(seconds.toString()); 
+            }
+        }
+    }
+
+    function startTimer() {
+        if (isRunning) return;
+        
+        if (timeLeft === 0 || !countdown) {
+            const mins = parseInt(minInput.value) || 0;
+            const secs = parseInt(secInput.value) || 0;
+            timeLeft = (mins * 60) + secs;
+        }
+
+        if (timeLeft <= 0) return;
+
+        isRunning = true;
+        updateDisplay(timeLeft);
+
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        const isJa = langSelect.value === 'ja';
+
+        if (isJa) {
+            let startText = "タイマーを開始します。";
+            if (mins > 0) startText += `${mins}分`;
+            if (secs > 0) startText += `${secs}秒`;
+            speak(startText);
+        } else {
+            speak(`Starting timer for ${mins} minutes and ${secs} seconds`);
+        }
+
+        countdown = setInterval(() => {
+            timeLeft--;
+            updateDisplay(timeLeft);
+            announceTime(timeLeft);
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                isRunning = false;
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(countdown);
+        isRunning = false;
+        speak(langSelect.value === 'ja' ? "一時停止" : "Timer paused");
+    }
+
+    function resetTimer() {
+        clearInterval(countdown);
+        isRunning = false;
+        const mins = parseInt(minInput.value) || 0;
+        const secs = parseInt(secInput.value) || 0;
+        timeLeft = (mins * 60) + secs;
+        updateDisplay(timeLeft);
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    stopBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+
+    function syncInputs() {
+        if(!isRunning) {
+            const mins = parseInt(minInput.value) || 0;
+            const secs = parseInt(secInput.value) || 0;
+            timeLeft = (mins * 60) + secs;
+            updateDisplay(timeLeft);
+        }
+    }
+    minInput.addEventListener('input', syncInputs);
+    secInput.addEventListener('input', syncInputs);
+</script>
+
+</body>
+</html>
