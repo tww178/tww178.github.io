@@ -12,24 +12,24 @@
     </ul>
     <script>
       document.querySelector("button").onclick=()=>{
-        const theText = document.querySelector("#whatDidUDo").value; // Get input value
+        const theText = document.querySelector("#whatDidUDo").value; // Get input value and save it into the variable "theText"
         let timeArray = [];
         
         if(localStorage.getItem("recordedTime")){
-          timeArray=JSON.parse(localStorage.getItem("recordedTime"));
+          timeArray = JSON.parse(localStorage.getItem("recordedTime"));
         }
         
         const dateNow = Date.now();
-        const timeEntry = { task: theText, time: dateNow }; // Store both task and timestamp Help: is entry here a dictionary or an object??
-        timeArray.push(timeEntry);
+        const timeEntry = { task: theText, time: dateNow }; // Store both the task and the timestamp into timeEntry, a JS object.
+        timeArray.push(timeEntry); // timeArray is hence an array of JS objects
         
-        saveTheTime(timeEntry); // Send task + time to backend related stuff
+        saveTheTime(timeEntry); // Send task + time to "backend"
         
-        localStorage.setItem("recordedTime", JSON.stringify(timeArray)) // Saving the updated entries to localStorage
+        localStorage.setItem("recordedTime", JSON.stringify(timeArray)) // Saving the updated entries to localStorage (separate from the process of sending to "backend")
 
         const prettyTimes = timeArray
           .map(entry => {
-            const myDate = new Date(entry.time); //Help: is entry here a dictionary or an object??
+            const myDate = new Date(entry.time); //the "entry" here is each object inside the timeArray array, originally pushed as "timeEntry"
             return `<li>${myDate.toISOString()} - ${entry.task}</li>`; // Display both timestamp and task
           })
           .join("\n");
@@ -41,7 +41,7 @@
 
       //backend stuff starts below? //next time we are changing some stuff down here so when we click the button it sends the correct time and things we did
       function saveTheTime (timeEntry) {
-        console.log("saveTheTime",timeEntry)  //time is the parameter for the saveTheTime function and the argument passed in is the timeEntry above in line 26??
+        console.log("saveTheTime", timeEntry)  
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
