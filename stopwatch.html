@@ -63,10 +63,11 @@
 
       function fetchTheTime () {
 
-        fetch("https://280f6d0e-bec1-4ddd-bb06-5494ffc0e24a-00-3thfss8fd9z6p.worf.replit.dev/fetchthetime")
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+        const theWholeBear = fetch("https://280f6d0e-bec1-4ddd-bb06-5494ffc0e24a-00-3thfss8fd9z6p.worf.replit.dev/fetchthetime");
+        // Breaking up the fetch/.then/.catch syntax to look at Promises
+        const theWholeBearText = theWholeBear.then((bearresponse) => bearresponse.text()); // theWholeBear is a Promise and I unwrap it with .then once it resolves by running the arrow function.
+        theWholeBearText.then((result) => console.log(result));
+        theWholeBearText.catch((error) => console.error(error)); // If theWholeBearText breaks, catch it here
 
         console.log("I am after but I run first");        
 
